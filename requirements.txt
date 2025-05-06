@@ -5,3 +5,4 @@ matplotlib
 seaborn
 numpy
 faker==37.1.0
+plotly.express
