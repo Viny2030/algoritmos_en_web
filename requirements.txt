@@ -4,4 +4,4 @@ scikit-learn
 matplotlib
 seaborn
 numpy
-pycaret
+pycaret==3.0
