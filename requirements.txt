@@ -4,7 +4,7 @@ scikit-learn
 matplotlib
 seaborn
 numpy
-faker==37.1.0
+faker
 plotly.express
 random
 plotly
