@@ -1,5 +1,6 @@
 import streamlit as st
 import warnings
+import plotly.express as px
 warnings.filterwarnings('ignore')
 import pandas as pd
 import numpy as np
