@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")  # Ignora advertencias innecesarias
 st.title('Análisis de Casos Judiciales')
 
 # URL corregida del dataset
-url = "https://raw.githubusercontent.com/Viny2030/Libro_Algoritmos_contra_fraude_corrupcion/main/df_casos_judiciales.csv"
+url = "https://raw.githubusercontent.com/Viny2030/Libro_Algoritmos_contra_fraude_corrupcion/refs/heads/main/df_casos_judiciales.csv"
 
 @st.cache_data
 def load_data(url):
