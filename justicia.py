@@ -3,11 +3,14 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import warnings
+
+warnings.filterwarnings("ignore")  # Ignora advertencias innecesarias
 
 st.title('Análisis de Casos Judiciales')
 
-# URL del dataset
-url = "https://raw.githubusercontent.com/Viny2030/Libro_Algoritmos_contra_fraude_corrupcion/refs/heads/main/df_casos_judiciales.csv"
+# URL corregida del dataset
+url = "https://raw.githubusercontent.com/Viny2030/Libro_Algoritmos_contra_fraude_corrupcion/main/df_casos_judiciales.csv"
 
 @st.cache_data
 def load_data(url):
@@ -17,6 +20,9 @@ def load_data(url):
 
 # Cargar los datos
 df_casos = load_data(url)
+
+# Verificar columnas del DataFrame
+st.write("Columnas disponibles en el DataFrame:", df_casos.columns.tolist())
 
 st.subheader('Dataset de Casos Judiciales Cargado:')
 st.dataframe(df_casos.head())
