@@ -1,11 +1,6 @@
 streamlit
 pandas
-scikit-learn
-matplotlib
 seaborn
 numpy
-faker
-plotly.express
-random
-plotly
-datetime
+
+
