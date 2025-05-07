@@ -95,10 +95,19 @@ if df is not None:
     # Distribución de proyectos sospechosos
     st.subheader("Distribución de Proyectos Sospechosos")
     sospechoso_counts = df_filtered['Es_Sospechoso'].value_counts()
-    fig_sospechoso, ax_sospechoso = plt.subplots()
-    ax_sospechoso.pie(sospechoso_counts, labels=['No Sospechoso', 'Sospechoso'], autopct='%1.1f%%', startangle=90)
-    ax_sospechoso.axis('equal')
-    st.pyplot(fig_sospechoso)
+    labels = []
+    if 0 in sospechoso_counts:
+        labels.append('No Sospechoso')
+    if 1 in sospechoso_counts:
+        labels.append('Sospechoso')
+
+    if not sospechoso_counts.empty:
+        fig_sospechoso, ax_sospechoso = plt.subplots()
+        ax_sospechoso.pie(sospechoso_counts, labels=labels, autopct='%1.1f%%', startangle=90)
+        ax_sospechoso.axis('equal')
+        st.pyplot(fig_sospechoso)
+    else:
+        st.info("No hay datos disponibles para mostrar la distribución de proyectos sospechosos con los filtros actuales.")
 
     # Monto del contrato vs. Sospechoso
     st.subheader("Monto del Contrato vs. Sospecha")
