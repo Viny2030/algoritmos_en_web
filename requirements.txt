@@ -4,5 +4,4 @@ seaborn
 numpy
 matplotlib
 datetime
-xgboost
 faker
