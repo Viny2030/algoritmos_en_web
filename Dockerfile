@@ -3,12 +3,6 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-RUN pip install --no-cache-dir streamlit
-RUN pip install --no-cache-dir pandas
-RUN pip install --no-cache-dir numpy
-RUN pip install --no-cache-dir matplotlib
-RUN pip install --no-cache-dir seaborn
-
 COPY requirements.txt .
 COPY fraude_app.py
 
