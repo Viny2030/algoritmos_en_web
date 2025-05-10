@@ -1,8 +1,8 @@
-streamlit
-pandas
-seaborn
-numpy
-matplotlib
-datetime
-faker
-plotly.express
+streamlit==1.45.0
+pandas==2.2.3
+seaborn==0.13.2
+numpy==2.2.5
+matplotlib==3.10.3
+datetime==5.5
+faker==37.1.0
+plotly.express==0.4.1
