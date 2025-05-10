@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir matplotlib
 RUN pip install --no-cache-dir seaborn
 
 COPY requirements.txt .
-COPY app.py .
+COPY fraude_app.py
 
 RUN pip install --no-cache-dir -r requirements.txt
 
