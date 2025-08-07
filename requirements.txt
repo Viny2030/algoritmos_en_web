@@ -3,4 +3,6 @@ numpy
 faker
 matplotlib
 seaborn
+scipy
+scikit-learn
 streamlit
