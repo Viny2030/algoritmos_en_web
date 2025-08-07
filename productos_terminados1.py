@@ -170,5 +170,6 @@ if st.button ("Iniciar Auditoría", help="Genera datos simulados y aplica el an�
         fig4, ax4 = plt.subplots (figsize=(10, 5))
         sns.barplot (data=top_margen, x='producto', y='margen_unitario', palette='viridis', ax=ax4)
         ax4.set_title ('Top 10 Productos con Mayor Margen Unitario')
-        ax4.tick_params (axis='x', rotation=45, ha='right')
+        ax4.tick_params (axis='x', rotation=45)  # <-- Línea corregida
+        plt.tight_layout ()
         st.pyplot (fig4)
