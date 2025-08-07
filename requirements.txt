@@ -3,6 +3,5 @@ numpy
 faker
 matplotlib
 seaborn
-fuzzywuzzy
-python-Levenshtein
+scikit-learn
 streamlit
