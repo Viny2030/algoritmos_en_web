@@ -28,11 +28,16 @@ def generar_datos_simulados():
     Faker.seed (901)
 
     num_registros = 50
-    tipos_activo_corriente = ['Valores a cobrar', 'Documentos por cobrar', 'Efectivo y Equivalentes',
-                              'Inversiones a Corto Plazo', 'Inventarios', 'Cuentas por Cobrar']
+    tipos_activo_corriente = [
+        'Valores a cobrar', 'Documentos por cobrar', 'Efectivo y Equivalentes',
+        'Inversiones a Corto Plazo', 'Inventarios', 'Cuentas por Cobrar'
+    ]
     monedas = ['ARS', 'USD', 'EUR']
-    descripciones = ['Pago anticipado por publicidad contratada', 'Documentos por cobrar pendientes de pago',
-                     'Fondos disponibles en caja y bancos']
+    descripciones = [
+        'Pago anticipado por publicidad contratada', 'Documentos por cobrar pendientes de pago',
+        'Fondos disponibles en caja y bancos', 'Bonos de corto plazo',
+        'Materias primas en almacén', 'Facturas de clientes pendientes'
+    ]
 
     activos_corrientes = []
     for i in range (num_registros):
@@ -54,7 +59,8 @@ def generar_datos_simulados():
 def aplicar_auditoria(df):
     """Aplica el análisis de auditoría a los datos."""
     df['fecha_registro'] = pd.to_datetime (df['fecha_registro'])
-    df['monto'] = pd.to_numeric (df['monto'], errors='coerce').fillna (0)
+    df['monto'] = pd.to_numeric (df['monto'], errors='coerce')
+    df.fillna ({'monto': 0}, inplace=True)
 
     fecha_auditoria = datetime.now ()
     df['dias_desde_registro'] = (fecha_auditoria - df['fecha_registro']).dt.days
@@ -113,7 +119,7 @@ if st.button ("Iniciar Auditoría", help="Genera datos simulados y aplica el an�
         df_auditado['tipo_activo'].value_counts ().plot (kind='bar', color=sns.color_palette ("viridis", len (
             df_auditado['tipo_activo'].unique ())), ax=axes[0, 0])
         axes[0, 0].set_title ('1. Distribución de Tipos de Activos Corrientes')
-        axes[0, 0].tick_params (axis='x', rotation=45)  # <-- Línea corregida
+        axes[0, 0].tick_params (axis='x', rotation=45)
 
         # Gráfico 2: Distribución de Montos por Moneda
         monto_por_moneda = df_auditado.groupby ('moneda')['monto'].sum ().sort_values (ascending=False)
@@ -124,7 +130,7 @@ if st.button ("Iniciar Auditoría", help="Genera datos simulados y aplica el an�
 
         # Gráfico 3: Histograma de Monto
         sns.histplot (df_auditado['monto'], bins=15, kde=True, color='skyblue', ax=axes[1, 0])
-        axes[1, 0].set_title ('3. Distribución del Monto de Activos Corrientes')
+        axes[1, 0].set_title ('3. Distribución de Montos')
 
         # Gráfico 4: Histograma de Antigüedad
         sns.histplot (df_auditado['dias_desde_registro'], bins=10, kde=True, color='lightcoral', ax=axes[1, 1])
