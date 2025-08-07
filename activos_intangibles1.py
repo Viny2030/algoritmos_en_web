@@ -10,6 +10,8 @@ from faker import Faker
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
 import streamlit as st
 
 # =================================================================
@@ -154,7 +156,7 @@ if st.button ("Iniciar Auditoría", help="Genera datos simulados y aplica el an�
                                                                     ax=axes[0, 0])
         axes[0, 0].set_title ('1. Distribución de Tipos de Activos')
         axes[0, 0].set_ylabel ('Cantidad')
-        axes[0, 0].tick_params (axis='x', rotation=45, ha='right')
+        axes[0, 0].tick_params (axis='x', rotation=45)  # <-- Línea corregida
 
         # Gráfico 2: Distribución del Costo de Adquisición
         sns.histplot (df_auditado['costo_adquisicion'], bins=10, kde=True, color='skyblue', ax=axes[0, 1])
