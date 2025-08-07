@@ -113,7 +113,7 @@ if st.button ("Iniciar Auditoría", help="Genera datos simulados y aplica el an�
         df_auditado['tipo_activo'].value_counts ().plot (kind='bar', color=sns.color_palette ("viridis", len (
             df_auditado['tipo_activo'].unique ())), ax=axes[0, 0])
         axes[0, 0].set_title ('1. Distribución de Tipos de Activos Corrientes')
-        axes[0, 0].tick_params (axis='x', rotation=45, ha='right')
+        axes[0, 0].tick_params (axis='x', rotation=45)  # <-- Línea corregida
 
         # Gráfico 2: Distribución de Montos por Moneda
         monto_por_moneda = df_auditado.groupby ('moneda')['monto'].sum ().sort_values (ascending=False)
