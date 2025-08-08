@@ -1,8 +1,7 @@
 pandas
 numpy
-Faker
-scipy
+faker
 matplotlib
 seaborn
-streamlit
 scikit-learn
+streamlit
