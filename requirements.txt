@@ -1,5 +1,6 @@
 pandas
 numpy
+faker
 matplotlib
 seaborn
 scikit-learn
