@@ -1,7 +1,8 @@
 pandas
 numpy
 faker
+scikit-learn
 matplotlib
 seaborn
-scikit-learn
 streamlit
+google-cloud-storage
