@@ -1,7 +1,10 @@
+streamlit
 pandas
 numpy
-faker
-scikit-learn
 matplotlib
 seaborn
-streamlit
+scikit-learn
+qiskit
+qiskit-aer
+qiskit-machine-learning
+qiskit-algorithms
