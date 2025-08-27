@@ -2,8 +2,18 @@
 # SCRIPT DE AUDITORÍA CUÁNTICA DE MATERIAS PRIMAS CON STREAMLIT Y QISKIT
 # =================================================================
 import streamlit as st
-# --- 1. IMPORTACIONES CUÁNTICAS Y CLÁSICAS UNIFICADAS ---
-
+import pandas as pd
+import numpy as np
+import random
+from datetime import datetime
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.ensemble import IsolationForest
+from sklearn.preprocessing import StandardScaler
+from qiskit.circuit.library import ZZFeatureMap, RealAmplitudes
+from qiskit_machine_learning.algorithms import VQC  # Usamos VQC, que es más adecuado
+from qiskit_algorithms.optimizers import COBYLA
+from qiskit.primitives import Sampler
 
 # =================================================================
 # 2. CONFIGURACIÓN DE PÁGINA Y GENERACIÓN DE DATOS
@@ -49,11 +59,12 @@ def aplicar_auditoria_clasica(df):
     st.subheader ("🤖 Detección de Anomalías (Clásica - Isolation Forest)")
 
     features = df[['costo_total', 'cantidad']].copy ()
-    features['costo_total'] = StandardScaler ().fit_transform (features[['costo_total']])
-    features['cantidad'] = StandardScaler ().fit_transform (features[['cantidad']])
+    # CORRECCIÓN: Escalar ambas características en conjunto
+    scaler_clasico = StandardScaler ()
+    features_scaled = scaler_clasico.fit_transform (features)
 
     iso_forest = IsolationForest (contamination=0.1, random_state=42)
-    df['anomalia_clasica'] = iso_forest.fit_predict (features)
+    df['anomalia_clasica'] = iso_forest.fit_predict (features_scaled)
 
     anomalias = df[df['anomalia_clasica'] == -1]
 
@@ -64,8 +75,12 @@ def aplicar_auditoria_clasica(df):
         st.info ("No se detectaron anomalías con el modelo clásico.")
 
     fig, ax = plt.subplots ()
-    sns.scatterplot (x='costo_total', y='cantidad', hue='anomalia_clasica',
-                     palette={1: 'blue', -1: 'red'}, data=df, ax=ax)
+    # Usar los datos escalados para el gráfico
+    temp_df = pd.DataFrame (features_scaled, columns=['costo_total_scaled', 'cantidad_scaled'])
+    temp_df['anomalia_clasica'] = df['anomalia_clasica']
+
+    sns.scatterplot (x='costo_total_scaled', y='cantidad_scaled', hue='anomalia_clasica',
+                     palette={1: 'blue', -1: 'red'}, data=temp_df, ax=ax)
     ax.set_title ("Anomalías Clásicas (Isolation Forest)")
     st.pyplot (fig)
 
@@ -79,6 +94,7 @@ def aplicar_auditoria_clasica(df):
 def aplicar_auditoria_cuantica(df):
     """
     Aplica un clasificador cuántico para la detección de anomalías.
+    Se ha corregido el uso de VQC de Qiskit para un flujo de trabajo más adecuado.
     """
     st.subheader ("⚛️ Detección de Anomalías (Cuántica)")
 
@@ -86,6 +102,7 @@ def aplicar_auditoria_cuantica(df):
     df_for_qml = df.copy ()
 
     # Para la demostración, las anomalías clásicas se usan como etiquetas para el modelo cuántico
+    # Se recomienda tener 0 y 1 para las etiquetas del clasificador cuántico
     X = df_for_qml[['costo_total', 'cantidad']].values
     y = np.where (df_for_qml['anomalia_clasica'] == -1, 0, 1)  # 0 para anomalía, 1 para normal
 
@@ -101,23 +118,29 @@ def aplicar_auditoria_cuantica(df):
     # Circuito Análogo a una Red Neuronal (Quantum Variational Circuit)
     ansatz = RealAmplitudes (num_qubits=num_features, reps=1)
 
-    # 3. Construir la Red Neuronal Cuántica (QNN)
-    qnn = EstimatorQNN (
-        circuit=ansatz,
-        input_params=feature_map.parameters,
-        weight_params=ansatz.parameters
+    # 3. Construir y entrenar el clasificador cuántico con VQC
+    # VQC es la forma recomendada de construir un clasificador cuántico en Qiskit
+    # VQC integra el FeatureMap, el Ansatz y el optimizador.
+
+    sampler = Sampler ()
+    vqc = VQC (
+        sampler=sampler,
+        feature_map=feature_map,
+        ansatz=ansatz,
+        optimizer=COBYLA (maxiter=100)
     )
 
-    # 4. Configurar el clasificador y optimizador
-    optimizer = COBYLA (maxiter=100)
-    classifier = NeuralNetworkClassifier (qnn, optimizer=optimizer)
-
-    # 5. Entrenar el clasificador
+    # 4. Entrenar el clasificador
     with st.spinner ('Entrenando el clasificador cuántico...'):
-        classifier.fit (X_scaled, y)
+        try:
+            vqc.fit (X_scaled, y)
+        except Exception as e:
+            st.error (f"Error durante el entrenamiento del modelo cuántico: {e}")
+            return df
 
-    # 6. Predecir y evaluar
-    y_pred = classifier.predict (X_scaled)
+    # 5. Predecir y evaluar
+    y_pred = vqc.predict (X_scaled)
+    # y_pred devuelve 0s y 1s. Los convertimos a -1 y 1 para el gráfico.
     df['anomalia_cuantica'] = np.where (y_pred == 0, -1, 1)
 
     anomalias_qml = df[df['anomalia_cuantica'] == -1]
@@ -129,8 +152,12 @@ def aplicar_auditoria_cuantica(df):
         st.info ("No se detectaron anomalías con el modelo cuántico.")
 
     fig, ax = plt.subplots ()
-    sns.scatterplot (x='costo_total', y='cantidad', hue='anomalia_cuantica',
-                     palette={1: 'blue', -1: 'red'}, data=df, ax=ax)
+    # Usar los datos escalados para el gráfico
+    temp_df = pd.DataFrame (X_scaled, columns=['costo_total_scaled', 'cantidad_scaled'])
+    temp_df['anomalia_cuantica'] = df['anomalia_cuantica']
+
+    sns.scatterplot (x='costo_total_scaled', y='cantidad_scaled', hue='anomalia_cuantica',
+                     palette={1: 'blue', -1: 'red'}, data=temp_df, ax=ax)
     ax.set_title ("Anomalías Cuánticas")
     st.pyplot (fig)
 
